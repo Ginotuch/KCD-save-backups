@@ -8,37 +8,38 @@ from time import sleep, ctime
 # 0 for infinite, otherwise maximum backups allowed. Number should always be integer 0 or greater
 # Warning: backups can be large in file size, infinite backups can use up a lot of disk space
 backup_size = 20
+save_location = os.path.join(str(pathlib.Path.home()), "Saved Games", "kingdomcome")
+backup_location = os.path.join(str(pathlib.Path.home()), "Saved Games", "backups")
 
 
 def main():
-    save_location = os.path.join(str(pathlib.Path.home()), "Saved Games")
-    if not "kingdomcome" in os.listdir(save_location):
-        print("kingdomcome SAVE FOLDER NOT FOUND IN", save_location)
+    if not os.path.exists(save_location):
+        print("kingdomcome SAVE FOLDER NOT FOUND AT", save_location)
         print("Please launch the game and create a save before running this script")
         print("If you think this message was shown in error, please make an issue at https://github.com/Ginotuch/KCD-save-backups")
         input()
         exit()
-    max_time = get_max(save_location)
-    if not os.path.exists(os.path.join(save_location, "backups")):
-        os.mkdir(os.path.join(save_location, "backups"))
-    rename_existing_backups(save_location)
+    max_time = get_max()
+    if not os.path.exists(backup_location):
+        os.mkdir(backup_location)
+    rename_existing_backups()
     print("Backup process started\n")
     while True:
-        if get_max(save_location)[1] > max_time[1]:
-            max_time = get_max(save_location)
-            make_backup(save_location)
+        if get_max()[1] > max_time[1]:
+            max_time = get_max()
+            make_backup()
         sleep(20)  # Refresh time of checking for new save
 
 
-def rename_existing_backups(save_location):
-    old_backups = get_old_backups(save_location)
+def rename_existing_backups():
+    old_backups = get_old_backups()
     if len(old_backups) > 0:
         try:
             a = [int(x[6:]) for x in old_backups]  # Although could be O(1) time, this is much nicer code
             if a[-1] * (a[-1] + a[0]) / 2 - sum(a) != 0:  # Taken from https://stackoverflow.com/a/20718334
                 for num in range(1, len(old_backups) + 1):
-                    os.rename(os.path.join(save_location, "backups", old_backups[num - 1]),
-                              os.path.join(save_location, "backups", "backup{}".format(str(num))))
+                    os.rename(os.path.join(backup_location, old_backups[num - 1]),
+                              os.path.join(backup_location, "backup{}".format(str(num))))
         except ValueError:
             print("UNEXPECTED FOLDER/FILE IN BACKUPS LOCATION, PLEASE REMOVE EVERYTHING EXCEPT BACKUP FOLDERS")
             input()
@@ -68,60 +69,53 @@ def alphanum_key(s):
     return [ tryint(c) for c in re.split('([0-9]+)', s) ]
 
 
-def get_old_backups(save_location):
-    backups_loc = os.path.join(save_location, "backups")
-    old_backups = [d for d in os.listdir(backups_loc) if os.path.isdir(os.path.join(backups_loc, d))]
+def get_old_backups():
+    old_backups = [d for d in os.listdir(backup_location) if os.path.isdir(os.path.join(backup_location, d))]
     old_backups.sort(key=alphanum_key)
     return old_backups
 
 
-def make_backup(save_location):
-    backups_loc = os.path.join(save_location, "backups")
-    old_backups = get_old_backups(save_location)
+def make_backup():
+    old_backups = get_old_backups()
     if backup_size == 0:
         new_name = str(max([int(x[6:]) for x in old_backups]) + 1)
-        source = os.path.join(save_location, "kingdomcome")
-        destination = os.path.join(save_location, "backups", "backup{}".format(new_name))
-        shutil.copytree(source, destination)
+        destination = os.path.join(backup_location, "backup{}".format(new_name))
+        shutil.copytree(save_location, destination)
         print_message()
 
     else:
         while len(old_backups) > backup_size:
-            shutil.rmtree(os.path.join(backups_loc, old_backups[0]))
+            shutil.rmtree(os.path.join(backup_location, old_backups[0]))
             old_backups.pop(0)
-            rename_existing_backups(save_location)
-            old_backups = get_old_backups(save_location)
+            rename_existing_backups()
+            old_backups = get_old_backups()
 
         if len(old_backups) < backup_size:
             new_name = "1" if len(old_backups) == 0 else str(max([int(x[6:]) for x in old_backups]) + 1)
-            source = os.path.join(save_location, "kingdomcome")
-            destination = os.path.join(save_location, "backups", "backup{}".format(new_name))
-            shutil.copytree(source, destination)
+            destination = os.path.join(backup_location, "backup{}".format(new_name))
+            shutil.copytree(save_location, destination)
             print_message()
         elif len(old_backups) == backup_size:
-            shutil.rmtree(os.path.join(backups_loc, old_backups[0]))
+            shutil.rmtree(os.path.join(backup_location, old_backups[0]))
             old_backups.pop(0)
             for backup in old_backups:
-                os.rename(os.path.join(backups_loc, backup),
-                          os.path.join(backups_loc, backup[:6] + str(int(backup[6:]) - 1)))
-            old_backups = get_old_backups(save_location)
+                os.rename(os.path.join(backup_location, backup),
+                          os.path.join(backup_location, backup[:6] + str(int(backup[6:]) - 1)))
+            old_backups = get_old_backups()
             new_name = "1" if len(old_backups) == 0 else str(max([int(x[6:]) for x in old_backups]) + 1)
-            source = os.path.join(save_location, "kingdomcome")
-            destination = os.path.join(save_location, "backups", "backup{}".format(new_name))
-            shutil.copytree(source, destination)
+            destination = os.path.join(backup_location, "backup{}".format(new_name))
+            shutil.copytree(save_location, destination)
             print_message()
 
 
-def get_max(save_location):
+def get_max():
     max_time = (0, 0)
-    save_location += "\\kingdomcome"
     for folder_path, folder_names, file_names in os.walk(save_location):
         for item in folder_names, file_names:
             for a in item:
                 if os.path.getctime(os.path.join(folder_path, a)) > max_time[1]:
                     max_time = (os.path.join(folder_path, a), os.path.getctime(os.path.join(folder_path, a)))
     return max_time
-
 
 if __name__ == "__main__":
     main()
