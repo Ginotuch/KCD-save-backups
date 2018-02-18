@@ -34,8 +34,8 @@ def rename_existing_backups(save_location):
     old_backups = get_old_backups(save_location)
     if len(old_backups) > 0:
         try:
-            a = [int(x[6:]) for x in old_backups]
-            if a[-1] * (a[-1] + a[0]) / 2 - sum(a) != 0:
+            a = [int(x[6:]) for x in old_backups]  # Although could be O(1) time, this is much nicer code
+            if a[-1] * (a[-1] + a[0]) / 2 - sum(a) != 0:  # Taken from https://stackoverflow.com/a/20718334
                 for num in range(1, len(old_backups) + 1):
                     os.rename(os.path.join(save_location, "backups", old_backups[num - 1]),
                               os.path.join(save_location, "backups", "backup{}".format(str(num))))
@@ -89,9 +89,7 @@ def make_backup(save_location):
         while len(old_backups) > backup_size:
             shutil.rmtree(os.path.join(backups_loc, old_backups[0]))
             old_backups.pop(0)
-            for backup in old_backups:
-                os.rename(os.path.join(backups_loc, backup),
-                          os.path.join(backups_loc, backup[:6] + str(int(backup[6:]) - 1)))
+            rename_existing_backups(save_location)
             old_backups = get_old_backups(save_location)
 
         if len(old_backups) < backup_size:

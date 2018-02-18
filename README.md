@@ -17,5 +17,11 @@ e.g. C:\Users\John Doe\Save Games\backups
 * Q: Why does this script exist?  
 A: I saw on Reddit and Steam that save corruption is a common issue, and didn't want to take any risks.
 
+## Feature list
+* Custom amount of backups to keep
+* 10 second refresh on new save data (uses almost no system resources)
+* Automatically renames backups if some were deleted
+* 
+
 #### Requirements
 * Python 3+ (Tested with Python 3.6.4)
