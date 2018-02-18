@@ -4,7 +4,7 @@ Keeps all backups, or overwrites older ones.
 
 ### Usage
 Change the amount of backups to keep in main.py (line 5) if needed. Setting it to 0 keeps infinite backups.  
-Then either run the file, or from the command line: `python KCD-save-backups.py`
+Then either run the file, or from the command line while playing KCD: `python KCD-save-backups.py`
 
 #### Notes
 If amount of backups is set to a high number, this **will** use a lot of diskspace. (After 5 hours of playing, and 20 backups, it used ~1.7GB on my system)  
