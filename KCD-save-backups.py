@@ -1,11 +1,13 @@
 import os
-from time import sleep, ctime
-import shutil
 import pathlib
 import re
+import shutil
+from time import sleep, ctime
 
-backup_size = 20  # 0 for infinite, otherwise maximum backups allowed. Number should always be integer 0 or greater
+
+# 0 for infinite, otherwise maximum backups allowed. Number should always be integer 0 or greater
 # Warning: backups can be large in file size, infinite backups can use up a lot of disk space
+backup_size = 20
 
 
 def main():
@@ -16,10 +18,10 @@ def main():
         print("If you think this message was shown in error, please make an issue at https://github.com/Ginotuch/KCD-save-backups")
         input()
         exit()
-    rename_existing_backups()
     max_time = get_max(save_location)
     if not os.path.exists(os.path.join(save_location, "backups")):
         os.mkdir(os.path.join(save_location, "backups"))
+    rename_existing_backups(save_location)
     print("Backup process started\n")
     while True:
         if get_max(save_location)[1] > max_time[1]:
@@ -33,14 +35,14 @@ def rename_existing_backups(save_location):
     if len(old_backups) > 0:
         try:
             a = [int(x[6:]) for x in old_backups]
-            if a[-1]*(a[-1] + a[0]) / 2 - sum(a) != 0:
+            if a[-1] * (a[-1] + a[0]) / 2 - sum(a) != 0:
                 for num in range(1, len(old_backups) + 1):
-                    os.rename(os.path.join(save_location, "backups"), "backup{}".format(str(num)))
+                    os.rename(os.path.join(save_location, "backups", old_backups[num - 1]),
+                              os.path.join(save_location, "backups", "backup{}".format(str(num))))
         except ValueError:
             print("UNEXPECTED FOLDER/FILE IN BACKUPS LOCATION, PLEASE REMOVE EVERYTHING EXCEPT BACKUP FOLDERS")
             input()
             exit()
-
 
 
 def print_message():
@@ -102,7 +104,8 @@ def make_backup(save_location):
             shutil.rmtree(os.path.join(backups_loc, old_backups[0]))
             old_backups.pop(0)
             for backup in old_backups:
-                os.rename(os.path.join(backups_loc, backup), os.path.join(backups_loc, backup[:6] + str(int(backup[6:]) - 1)))
+                os.rename(os.path.join(backups_loc, backup),
+                          os.path.join(backups_loc, backup[:6] + str(int(backup[6:]) - 1)))
             old_backups = get_old_backups(save_location)
             new_name = "1" if len(old_backups) == 0 else str(max([int(x[6:]) for x in old_backups]) + 1)
             source = os.path.join(save_location, "kingdomcome")
