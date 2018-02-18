@@ -21,7 +21,8 @@ A: I saw on Reddit and Steam that save corruption is a common issue, and didn't 
 * Custom amount of backups to keep
 * 10 second refresh on new save data (uses almost no system resources)
 * Automatically renames backups if some were deleted
-* 
+* Custom save location specification
+* Custom backup directory location
 
 #### Requirements
 * Python 3+ (Tested with Python 3.6.4)

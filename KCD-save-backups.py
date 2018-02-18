@@ -8,8 +8,13 @@ from time import sleep, ctime
 # 0 for infinite, otherwise maximum backups allowed. Number should always be integer 0 or greater
 # Warning: backups can be large in file size, infinite backups can use up a lot of disk space
 backup_size = 20
-save_location = os.path.join(str(pathlib.Path.home()), "Saved Games", "kingdomcome")
-backup_location = os.path.join(str(pathlib.Path.home()), "Saved Games", "backups")
+
+# Set custom locations of where the game save is, and where to back them up
+save_location = os.path.join(str(pathlib.Path.home()), "Saved Games", "kingdomcome")  # Default save file location
+backup_location = os.path.join(str(pathlib.Path.home()), "Saved Games", "KCD_backups")  # Default backup directory
+
+# Refresh interval in seconds (raise if script hurts system performance)
+r_time = 10
 
 
 def main():
@@ -28,7 +33,7 @@ def main():
         if get_max()[1] > max_time[1]:
             max_time = get_max()
             make_backup()
-        sleep(20)  # Refresh time of checking for new save
+        sleep(r_time)  # Refresh time of checking for new save
 
 
 def rename_existing_backups():
@@ -116,6 +121,7 @@ def get_max():
                 if os.path.getctime(os.path.join(folder_path, a)) > max_time[1]:
                     max_time = (os.path.join(folder_path, a), os.path.getctime(os.path.join(folder_path, a)))
     return max_time
+
 
 if __name__ == "__main__":
     main()
