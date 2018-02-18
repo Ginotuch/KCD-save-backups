@@ -23,7 +23,7 @@ def main():
         if get_max(save_location)[1] > max_time[1]:
             max_time = get_max(save_location)
             make_backup(save_location)
-        sleep(1)
+        sleep(20)  # Refresh time of checking for new save
 
 
 def print_message():
