@@ -1,5 +1,5 @@
 import os
-from time import sleep
+from time import sleep, ctime
 import shutil
 import pathlib
 
@@ -18,11 +18,16 @@ def main():
     max_time = get_max(save_location)
     if not os.path.exists(os.path.join(save_location, "backups")):
         os.mkdir(os.path.join(save_location, "backups"))
+    print("Backup process started\n")
     while True:
         if get_max(save_location)[1] > max_time[1]:
             max_time = get_max(save_location)
             make_backup(save_location)
         sleep(1)
+
+
+def print_message():
+    print("Backup made:", ctime())
 
 
 def make_backup(save_location):
@@ -33,6 +38,7 @@ def make_backup(save_location):
         source = os.path.join(save_location, "kingdomcome")
         destination = os.path.join(save_location, "backups", "backup{}".format(new_name))
         shutil.copytree(source, destination)
+        print_message()
 
     else:
         while len(old_backups) > backup_size:
@@ -49,6 +55,7 @@ def make_backup(save_location):
             source = os.path.join(save_location, "kingdomcome")
             destination = os.path.join(save_location, "backups", "backup{}".format(new_name))
             shutil.copytree(source, destination)
+            print_message()
         elif len(old_backups) == backup_size:
             old_backups.sort()
             shutil.rmtree(os.path.join(backups_loc, old_backups[0]))
@@ -60,6 +67,7 @@ def make_backup(save_location):
             source = os.path.join(save_location, "kingdomcome")
             destination = os.path.join(save_location, "backups", "backup{}".format(new_name))
             shutil.copytree(source, destination)
+            print_message()
 
 
 def get_max(save_location):
