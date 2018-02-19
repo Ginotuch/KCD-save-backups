@@ -3,7 +3,8 @@ This will automatically backup save games/profiles for the game Kingdom Come: De
 Keeps all backups, or overwrites older ones.
 
 ## Usage
-* Change the amount of backups to keep in KCD-save-backups.py (line 10) if needed (default=20).  
+* Download KCD-save-backups.py and place it anywhere.
+* If needed change the amount of backups to keep in KCD-save-backups.py (line 10, default=20).  
 * Setting it to 0 keeps infinite backups.  
 * Then either run the file directly, or from the command line while playing KCD: `python KCD-save-backups.py`
 
