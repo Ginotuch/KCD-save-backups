@@ -30,7 +30,7 @@ def main():
     rename_existing_backups()
     print("Backup process started. Please keep this window open while playing the game.\n")
     while True:
-        if get_max()[1] > max_time[1]:
+        if get_max() > max_time:
             max_time = get_max()
             make_backup()
         sleep(r_time)  # Refresh time of checking for new save
@@ -115,12 +115,12 @@ def make_backup():
 
 
 def get_max():
-    max_time = (0, 0)
+    max_time = 0
     for folder_path, folder_names, file_names in os.walk(save_location):
         for item in folder_names, file_names:
             for a in item:
-                if os.path.getctime(os.path.join(folder_path, a)) > max_time[1]:
-                    max_time = (os.path.join(folder_path, a), os.path.getctime(os.path.join(folder_path, a)))
+                if os.path.getctime(os.path.join(folder_path, a)) > max_time:
+                    max_time = os.path.getctime(os.path.join(folder_path, a))
     return max_time
 
 
