@@ -52,6 +52,9 @@ def rename_existing_backups():
     if len(old_backups) > 0:
         try:
             a = [int(x[6:]) for x in old_backups]
+
+            # Checks that the sum of the backup numbers is equal to the sum of how many there are.
+            # If it's not equal to 0, then there are less than the count, so this renames them from 1 to the count.
             if a[-1] * (a[-1] + a[0]) / 2 - sum(a) != 0:  # Taken from https://stackoverflow.com/a/20718334
                 for num in range(1, len(old_backups) + 1):
                     os.rename(os.path.join(backup_location, old_backups[num - 1]),
@@ -88,26 +91,27 @@ def alphanum_key(s):
 def get_old_backups():
     old_backups = [d for d in os.listdir(backup_location) if
                    os.path.isdir(os.path.join(backup_location, d)) and d[:6] == "backup"]
-    old_backups.sort(key=alphanum_key)
+    old_backups.sort(key=alphanum_key)  # Allows sorting with text + numbers e.g. "backup4"
     return old_backups
 
 
 def make_backup():
     old_backups = get_old_backups()
     if backup_size == 0:
-        new_name = str(max([int(x[6:]) for x in old_backups]) + 1)
+        new_name = str(max([int(x[6:]) for x in old_backups]) + 1)  # Creates new backup name one higher than previous
         destination = os.path.join(backup_location, "backup{}".format(new_name))
         shutil.copytree(save_location, destination)
         print_message()
 
     else:
-        while len(old_backups) > backup_size:
+        while len(old_backups) > backup_size:  # Deletes backups till there the same amount as maximum backups
             shutil.rmtree(os.path.join(backup_location, old_backups[0]))
             old_backups.pop(0)
             rename_existing_backups()
             old_backups = get_old_backups()
 
         if len(old_backups) < backup_size:
+            # Creates new backup name one higher than previous
             new_name = "1" if len(old_backups) == 0 else str(max([int(x[6:]) for x in old_backups]) + 1)
             destination = os.path.join(backup_location, "backup{}".format(new_name))
             shutil.copytree(save_location, destination)
@@ -115,7 +119,7 @@ def make_backup():
         elif len(old_backups) == backup_size:
             shutil.rmtree(os.path.join(backup_location, old_backups[0]))
             old_backups.pop(0)
-            for backup in old_backups:
+            for backup in old_backups:  # This loop instead of rename_existing_backups(), as this is slightly faster
                 os.rename(os.path.join(backup_location, backup),
                           os.path.join(backup_location, backup[:6] + str(int(backup[6:]) - 1)))
             old_backups = get_old_backups()
@@ -125,7 +129,7 @@ def make_backup():
             print_message()
 
 
-def get_max():
+def get_max():  # Finds the timestamp of the newest file
     max_time = 0
     for folder_path, folder_names, file_names in os.walk(save_location):
         for item in folder_names, file_names:
