@@ -28,7 +28,7 @@ def main():
     if not os.path.exists(backup_location):
         os.mkdir(backup_location)
     rename_existing_backups()
-    print("Backup process started\n")
+    print("Backup process started. Please keep this window open while playing the game.\n")
     while True:
         if get_max()[1] > max_time[1]:
             max_time = get_max()
