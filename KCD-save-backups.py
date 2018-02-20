@@ -18,16 +18,7 @@ r_time = 10
 
 
 def main():
-    # Text credits to Glenn Chappell, Bruce Jakeway, and Paul Burton. Taken from patorjk.com
-    opening_text = """  _  _______ _____                                    _                _                    
- | |/ / ____|  __ \                                  | |              | |                   
- | ' / |    | |  | |______ ___  __ ___   _____ ______| |__   __ _  ___| | ___   _ _ __  ___ 
- |  <| |    | |  | |______/ __|/ _` \ \ / / _ \______| '_ \\ / _` |/ __| |/ / | | | '_ \/ __|
- | . \ |____| |__| |      \__ \ (_| |\ V /  __/      | |_) | (_| | (__|   <| |_| | |_) \\__ \\
- |_|\_\_____|_____/       |___/\__,_| \_/ \___|      |_.__/ \__,_|\___|_|\_\\\\__,_| .__/|___/
- Created by Ginotuch                                                             | |        
- Source: github.com/Ginotuch/KCD-save-backups                                    |_|        
-    """
+
     if not os.path.exists(save_location):
         print("kingdomcome SAVE FOLDER NOT FOUND AT", save_location)
         print("Please launch the game and create a save before running this script")
@@ -38,13 +29,29 @@ def main():
     if not os.path.exists(backup_location):
         os.mkdir(backup_location)
     rename_existing_backups()
-    print(opening_text)
-    print("Backup process started. Please keep this window open while playing the game.\n")
+    print_opening()
     while True:
         if get_max() > max_time:
             max_time = get_max()
             make_backup()
         sleep(r_time)  # Refresh time of checking for new save
+
+
+def print_opening():
+    # Text credits to Glenn Chappell, Bruce Jakeway, and Paul Burton. Taken from patorjk.com
+    opening_text = """  _  _______ _____                                    _                _                    
+ | |/ / ____|  __ \                                  | |              | |                   
+ | ' / |    | |  | |______ ___  __ ___   _____ ______| |__   __ _  ___| | ___   _ _ __  ___ 
+ |  <| |    | |  | |______/ __|/ _` \ \ / / _ \______| '_ \\ / _` |/ __| |/ / | | | '_ \/ __|
+ | . \ |____| |__| |      \__ \ (_| |\ V /  __/      | |_) | (_| | (__|   <| |_| | |_) \\__ \\
+ |_|\_\_____|_____/       |___/\__,_| \_/ \___|      |_.__/ \__,_|\___|_|\_\\\\__,_| .__/|___/
+ Created by Ginotuch                                                             | |        
+ Source: github.com/Ginotuch/KCD-save-backups                                    |_|        
+       """
+    print(opening_text)
+    print("Save file location:", save_location)
+    print("Backups location:", backup_location)
+    print("\nBackup process started. Keep this window open while playing the game.\n")
 
 
 def rename_existing_backups():
