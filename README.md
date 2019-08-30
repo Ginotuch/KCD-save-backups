@@ -12,8 +12,8 @@ Keeps all backups, or overwrites older ones.
 ## Notes
 * If amount of backups is set to a high number, this **will** use a lot of diskspace. (After 5 hours of playing, and 20 backups, it used ~1.7GB on my system)  
 
-* Default backup location: `[USER_DIRECTORY]\Save Games\backups`  
-e.g. C:\Users\John Doe\Save Games\backups
+* Default backup location: `[USER_DIRECTORY]\Save Games\KCD_backups`  
+e.g. C:\Users\John Doe\Save Games\KCD_backups
 
 * Q: Why does this script exist?  
 A: I saw on Reddit and Steam that save corruption is a common issue, and didn't want to take any risks.
